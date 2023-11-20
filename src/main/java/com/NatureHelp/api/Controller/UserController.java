@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import com.NatureHelp.api.Service.UserService;
+import com.NatureHelp.api.Service.UserService.AuthenticationResponse;
 import com.NatureHelp.api.Model.User;
 
 @RestController
@@ -48,27 +49,29 @@ public class UserController {
    
     @PostMapping("/auth/login")
     @ApiOperation(value = "Authenticate user", notes = "Authenticate a user and return a JWT token.")
-    public ResponseEntity<String> authenticateUser(@RequestBody UserLoginRequest loginRequest) {
-        String token = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-        if (token != null) {
-            return new ResponseEntity<>(token, HttpStatus.OK);
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody UserLoginRequest loginRequest) {
+        AuthenticationResponse response = userService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (response != null) {
+            return ResponseEntity.ok(response);
         } else {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
-    @GetMapping("/auth/me")
-    @ApiOperation(value = "Get current user", notes = "Returns the current user.")
-    public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        String email = userService.getEmailFromToken(token);
-        Optional<User> user = userService.GetUserByEmail(email);
 
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+    // @GetMapping("/auth/me")
+    // @ApiOperation(value = "Get current user", notes = "Returns the current user.")
+    // public ResponseEntity<User> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
+    //     String token = authorizationHeader.substring(7);
+    //     String email = userService.getEmailFromToken(token);
+    //     Optional<User> user = userService.GetUserByEmail(email);
+
+    //     if (user.isPresent()) {
+    //         return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    //     } else {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
+    // }
 }
 

@@ -1,18 +1,24 @@
 package com.NatureHelp.api.Service;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Optional;
+
+import javax.management.relation.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.NatureHelp.api.Model.Roles;
 import com.NatureHelp.api.Model.User;
+import com.NatureHelp.api.Repository.RolesRepository;
 import com.NatureHelp.api.Repository.UserRepository;
 import com.NatureHelp.api.Config.JwtConfig;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class UserService {
@@ -21,10 +27,13 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    private JwtConfig jwtConfig;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RolesRepository rolesRepository;
 
     public class NotFoundException extends RuntimeException implements Serializable {
         private static final long serialVersionUID = 1L;
@@ -41,13 +50,24 @@ public class UserService {
     public Optional<User> GetUserById(Long id) {
         return userRepository.findById(id);
     }
-
     public User saveUser(User user) {
-    	user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
-        return savedUser;
-    }
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            throw new RuntimeException("Email déjà utilisé");
+        } else {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setState(new Date().toString());
+            Long roleId = user.getRoles();
 
+            Roles role = rolesRepository.findById(roleId)
+                .orElseThrow(() -> new NotFoundException("Role introuvable"));
+
+            user.setRole(role);
+            User savedUser = userRepository.save(user);
+            return savedUser;
+        }
+    }
+    
     public void deleteUser(Long userId) {
         User existingUser = userRepository.findById(userId).orElse(null);
         if (existingUser != null) {
@@ -71,6 +91,14 @@ public class UserService {
         if (existingUser != null) {
             existingUser.setfirstname(updatedUser.getfirstname());
             existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setLastname(updatedUser.getLastname());
+            existingUser.setPhone(updatedUser.getPhone());
+            existingUser.setAddress(updatedUser.getAddress());
+            existingUser.setCity(updatedUser.getCity());
+            existingUser.setZip(updatedUser.getZip());
+            existingUser.setCountry(updatedUser.getCountry());
+            existingUser.setState(updatedUser.getState());
+            
             User updatedRecord = userRepository.save(existingUser);
             return updatedRecord;
         } else {
@@ -78,39 +106,52 @@ public class UserService {
         }
     }
 
-    public String authenticate(String email, String password) {
+    public class AuthenticationResponse {
+        private String token;
+    
+        public AuthenticationResponse(String token) {
+            this.token = token;
+        }
+    
+        public String getToken() {
+            return token;
+        }
+    
+        public void setToken(String token) {
+            this.token = token;
+        }
+    }
+    
+    public AuthenticationResponse authenticate(String email, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
 
             if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
-                byte[] jwtSecretBytes = jwtConfig.getJwtSecret().getBytes();
-
-                String token = Jwts.builder()
-                        .setSubject(email)
-                        .signWith(SignatureAlgorithm.HS256, jwtSecretBytes)
-                        .compact();
-                return "{\"token\": \"" + token + "\"}";
+                String token = jwtTokenService.generateJwtToken(email, password);
+                return new AuthenticationResponse(token);
             }
         }
 
-        return null;
+        throw new RuntimeException("Email ou mot de passe incorrect");
     }
+    
+    
 
-    public String getEmailFromToken(String token) {
-        byte[] jwtSecretBytes = jwtConfig.getJwtSecret().getBytes();
+    // public String getEmailFromToken(String token) {
+    //     byte[] jwtSecretBytes = jwtConfig.getJwtSecret().getBytes();
 
-        String email = Jwts.parser()
-                .setSigningKey(jwtSecretBytes)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    //     String email = Jwts.parser()
+    //             .setSigningKey(jwtSecretBytes)
+    //             .parseClaimsJws(token)
+    //             .getBody()
+    //             .getSubject();
 
-        return email;
-    }
+    //     return email;
+    // }
 
-    public Optional<User> GetUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    // public Optional<User> GetUserByEmail(String email) {
+    //     return userRepository.findByEmail(email);
+    // }
 }

@@ -11,7 +11,8 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String email;
+	@Column(unique = true)
+    private String email;
 
 	private String firstname;
 
@@ -30,6 +31,12 @@ public class User {
 	private String country;
 
 	private String password;
+
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Roles role;
+
+	
 
 	@Column(name = "created_at")
 	private Timestamp createdAt;
@@ -91,8 +98,8 @@ public class User {
 		this.updatedAt = updatedAt;
 	}
 
-    public String getRole() {
-        return null;
+    public Long getRoles() {
+		return role.getId();
     }
 
 	public String getLastname() {
@@ -150,7 +157,16 @@ public class User {
 	public void setCountry(String country) {
 		this.country = country;
 	}
+	public void setRole(Roles role) {
+		this.role = role;
+	}
+	public boolean isMedecin() {
+        return getRoles() == 1L; 
+    }
 
+    public boolean isPatient() {
+        return getRoles() == 2L; 
+    }
 
 
 }
