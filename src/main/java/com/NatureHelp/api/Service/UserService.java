@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.management.relation.Role;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,11 +12,7 @@ import com.NatureHelp.api.Model.Roles;
 import com.NatureHelp.api.Model.User;
 import com.NatureHelp.api.Repository.RolesRepository;
 import com.NatureHelp.api.Repository.UserRepository;
-import com.NatureHelp.api.Config.JwtConfig;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.http.HttpStatus;
 
 @Service
 public class UserService {
@@ -139,19 +133,4 @@ public class UserService {
     
     
 
-    // public String getEmailFromToken(String token) {
-    //     byte[] jwtSecretBytes = jwtConfig.getJwtSecret().getBytes();
-
-    //     String email = Jwts.parser()
-    //             .setSigningKey(jwtSecretBytes)
-    //             .parseClaimsJws(token)
-    //             .getBody()
-    //             .getSubject();
-
-    //     return email;
-    // }
-
-    // public Optional<User> GetUserByEmail(String email) {
-    //     return userRepository.findByEmail(email);
-    // }
 }
