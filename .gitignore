@@ -32,3 +32,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### docker ###
+docker-compose.yml
+
+### application.properties ###
+application.properties

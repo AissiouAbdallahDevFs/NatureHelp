@@ -14,7 +14,6 @@ public class JwtConfig {
     private long tokenExpirationMillis;
 
     public String getJwtSecret() {
-        System.err.println("jwtSecret laaaa: " + jwtSecret);
         return jwtSecret;
     }
 

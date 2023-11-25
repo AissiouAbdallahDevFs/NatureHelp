@@ -52,10 +52,8 @@ public class UserService {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setState(new Date().toString());
             Long roleId = user.getRoles();
-
             Roles role = rolesRepository.findById(roleId)
                 .orElseThrow(() -> new NotFoundException("Role introuvable"));
-
             user.setRole(role);
             User savedUser = userRepository.save(user);
             return savedUser;
@@ -92,7 +90,6 @@ public class UserService {
             existingUser.setZip(updatedUser.getZip());
             existingUser.setCountry(updatedUser.getCountry());
             existingUser.setState(updatedUser.getState());
-            
             User updatedRecord = userRepository.save(existingUser);
             return updatedRecord;
         } else {

@@ -32,14 +32,10 @@ public class JwtTokenService {
             .setExpiration(Date.from(Instant.now().plus(5l, ChronoUnit.MINUTES)))
             .signWith(SignatureAlgorithm.HS256, jwtConfig.getJwtSecret().getBytes())
             .compact();
-
-        System.out.println("Generated JWT token: " + token);
-
         return token;
     }
     
     public Claims decodeJwt(String jwtToken) {
-        System.err.println("jwtToken ICIIIIIIIIIIIII: " + jwtToken);
         try {
             return Jwts.parser()
                     .setSigningKey(jwtConfig.getJwtSecret().getBytes(StandardCharsets.UTF_8))
