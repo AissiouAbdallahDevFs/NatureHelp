@@ -6,6 +6,7 @@ target/
 src/main/resources/application.properties
 
 ### STS ###
+
 .apt_generated
 .classpath
 .factorypath
@@ -15,12 +16,14 @@ src/main/resources/application.properties
 .sts4-cache
 
 ### IntelliJ IDEA ###
+
 .idea
 *.iws
 *.iml
 *.ipr
 
 ### NetBeans ###
+
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -31,14 +34,19 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
+
 .vscode/
 
 ### docker ###
+
 docker-compose.yml
 
 ### application.properties ###
+
 application.properties
 
 
+
 ### env ###
+
 .env
