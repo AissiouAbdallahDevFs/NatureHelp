@@ -24,8 +24,11 @@ public class SecurityConfig {
 						.antMatchers("/api/auth/logout").permitAll()
 						.antMatchers("/api/auth/refresh").permitAll()
 						.antMatchers("/api/appointments/create").permitAll()
+						.antMatchers("/api/appointments/join/{appointmentId}").permitAll()
+						.antMatchers("/api/appointments/all").permitAll()
 	                    .anyRequest().permitAll()
 	            )
+				.cors().disable()
 				.csrf().disable()
 	            .formLogin().disable();
 

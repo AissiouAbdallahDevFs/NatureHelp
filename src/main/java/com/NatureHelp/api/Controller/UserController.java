@@ -13,9 +13,9 @@ import com.NatureHelp.api.Service.UserService.AuthenticationResponse;
 import com.NatureHelp.api.Model.User;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api")
 @Api(tags = "Users", description = "Operations related to users")
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     @Autowired
