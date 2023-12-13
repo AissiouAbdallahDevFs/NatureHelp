@@ -6,9 +6,9 @@ import com.NatureHelp.api.Repository.AppointmentRepository;
 import com.NatureHelp.api.Repository.UserRepository;
 import com.NatureHelp.api.Config.JwtValidationException;
 
-import org.springframework.data.jpa.domain.Specification;
-import javax.persistence.criteria.Predicate;
 import io.jsonwebtoken.Claims;
+
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -79,8 +79,8 @@ public class AppointmentService {
         return appointmentRepository.findAll();
     }
 
-    public Iterable<Appointment> findOne() {
-        return appointmentRepository.findAll();
+    public  Optional<Appointment> findOne() {
+        return appointmentRepository.findOne();
     }
 
         

@@ -3,6 +3,9 @@ package com.NatureHelp.api.Controller;
 
 import com.NatureHelp.api.Model.Appointment;
 import com.NatureHelp.api.Service.AppointmentService;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +33,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Iterable<Appointment>> getAllAppointments() {
+    public ResponseEntity<Optional<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.findOne());
     }
 }
