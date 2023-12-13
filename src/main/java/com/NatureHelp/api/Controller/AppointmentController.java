@@ -7,6 +7,7 @@ import com.NatureHelp.api.Service.AppointmentService;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,12 @@ public class AppointmentController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Optional<Appointment>> getAllAppointments() {
-        return ResponseEntity.ok(appointmentService.findOne());
+    public ResponseEntity<?> getAllAppointments() {
+        try {
+            Optional<Appointment> appointment = appointmentService.findOne();
+            return ResponseEntity.ok(appointment);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aucun rendez-vous trouvé.");
+        }
     }
 }

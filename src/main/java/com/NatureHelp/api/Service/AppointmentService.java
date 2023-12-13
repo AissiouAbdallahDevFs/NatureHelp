@@ -80,7 +80,14 @@ public class AppointmentService {
     }
 
     public  Optional<Appointment> findOne() {
-        return appointmentRepository.findOne();
+        
+        Optional<Appointment> appointment = appointmentRepository.findOne();
+        if (appointment.isEmpty()) {
+            throw new RuntimeException("Aucun rendez-vous trouvé.");
+        }else{
+            return appointment;
+        }
+
     }
 
         
